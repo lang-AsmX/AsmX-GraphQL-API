@@ -1,7 +1,7 @@
 const { GraphQLObjectType, GraphQLString } = require('graphql');
 
 const TagType = new GraphQLObjectType({
-    name: 'Tag',
+    name: 'Tags',
     fields: () => ({
       name: { type: GraphQLString },
       zipball_url: { type: GraphQLString },

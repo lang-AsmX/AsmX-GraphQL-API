@@ -14,7 +14,7 @@ const AssetsType = new GraphQLObjectType({
 
 
 const ReleaseType = new GraphQLObjectType({
-    name: 'Release',
+    name: 'Releases',
     fields: () => ({
         name: { type: GraphQLString },
         prerelease: { type: GraphQLString },
