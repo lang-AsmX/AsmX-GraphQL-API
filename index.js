@@ -25,10 +25,27 @@ const QueryType = new GraphQLObjectType({
     
                 for (const release of data) {
                   if (resourceReleases[count] == undefined) resourceReleases[count] = {};
+                  if (resourceReleases[count]['assets'] == undefined) resourceReleases[count]['assets'] = [];
     
                   for (const property of Reflect.ownKeys(release)) {
                     if (['name', 'tag_name', 'created_at', 'published_at', 'prerelease'].includes(property)) resourceReleases[count][property] = release[property];
+
+                    if (property == 'assets') {
+                      for (let index = 0; index < release['assets'].length; index++) {
+                        const archive = release['assets'][index];
+
+                        resourceReleases[count]['assets'][index] = {
+                          name: archive['name'],
+                          download_count: archive['download_count'],
+                          created_at: archive['created_at'],
+                          updated_at: archive['updated_at'],
+                          browser_download_url: archive['browser_download_url']
+                        };
+                      }
+                    }
                   }
+
+                  count++;
                 }
     
                 return resourceReleases;
@@ -46,7 +63,7 @@ const QueryType = new GraphQLObjectType({
           let count = 0;
       
           if (Reflect.ownKeys(data).includes('message') && Reflect.ownKeys(data).length == 2) {
-            return { message: 'API rate limit' };
+            return [{ message: 'API rate limit' }];
           } else {
             for (const tag of data) {
               for (const property of Reflect.ownKeys(tag)) {
@@ -71,9 +88,9 @@ const QueryType = new GraphQLObjectType({
       resolve: async () => {
         return await GitHub.stargazers().then(data => {
           if (Reflect.ownKeys(data).includes('message') && Reflect.ownKeys(data).length == 2) {
-            return { message: 'API rate limit' };
+            return [{ message: 'API rate limit' }];
           } else {
-            return { count: data?.length || 0 };
+            return [{ count: data?.length || 0 }];
           }
         });
       }

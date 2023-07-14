@@ -1,7 +1,7 @@
 const { GraphQLObjectType, GraphQLString, GraphQLList, GraphQLInt } = require('graphql');
 const Github = require('../github');
 
-const AssetType = new GraphQLObjectType({
+const AssetsType = new GraphQLObjectType({
     name: 'Assets',
     fields: () => ({
       name: { type: GraphQLString },
@@ -21,33 +21,7 @@ const ReleaseType = new GraphQLObjectType({
         tag_name: { type: GraphQLString },
         created_at: { type: GraphQLString },
         published_at: { type: GraphQLString },
-
-        assets: {
-            type: new GraphQLList(AssetType),
-            resolve: async () => {
-                return await Github.releases().then(data => {
-                    if (Reflect.ownKeys(data).includes('message') && Reflect.ownKeys(data).length == 2) {
-                        return [{ message: 'API rate limit' }];
-                    } else {
-                        let assets = [];
-            
-                        for (const release of data) {
-                            for (const archive of release['assets']) {
-                                assets.push({
-                                    name: archive['name'],
-                                    download_count: archive['download_count'],
-                                    created_at: archive['created_at'],
-                                    updated_at: archive['updated_at'],
-                                    browser_download_url: archive['browser_download_url']
-                                });
-                            }
-                        }
-            
-                        return assets;
-                    }
-                });
-            }
-        }
+        assets: { type: new GraphQLList(AssetsType) }
     })
 });
 

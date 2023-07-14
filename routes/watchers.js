@@ -1,4 +1,5 @@
 const { GraphQLObjectType, GraphQLString, GraphQLInt, GraphQLList } = require('graphql');
+const GitHub = require('../github');
 
 const WatcherType = new GraphQLObjectType({
     name: 'Watcher',
